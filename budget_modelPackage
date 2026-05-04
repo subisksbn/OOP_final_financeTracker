@@ -9,7 +9,7 @@ public class Budget {
         this.monthlyLimit = monthlyLimit;
     }
 
-    // Getters and setters
+    // Getters + setters
     public Category getCategory() {
     	return category;
     }
@@ -20,11 +20,11 @@ public class Budget {
     	this.monthlyLimit = limit;
     }
 
-    // CSV format: CATEGORY_ENUM,monthlyLimit
+    // CSV format: just concatenate both fields
     public String toCSV() {
         return category.name() + "," + monthlyLimit;
     }
-
+    // convert a line from CSV file to meaningful object
     public static Budget fromCSV(String line) {
         String[] parts = line.split(",", 2);
         Category category = Category.valueOf(parts[0]);

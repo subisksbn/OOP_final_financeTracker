@@ -5,6 +5,7 @@ public enum Category {
     UTILITIES("Utilities"),
     ENTERTAINMENT("Entertainment"),
     SUBSCRIPTIONS("Auto-renewal Subscriptions");
+    //open for extension..
 
     private final String displayName;
 
@@ -15,8 +16,7 @@ public enum Category {
     public String getDisplayName() {
     	return displayName;
     }
-
-    // Print all categories as numbered menu
+    // display all categories as a numbered menu
     public static void printMenu() {
         System.out.println("1. Food & Groceries");
         System.out.println("2. Utilities");
@@ -24,9 +24,22 @@ public enum Category {
         System.out.println("4. Auto-renewal Subscriptions");
     }
 
-    // Convert menu number to Category
+    // map menu number to a category
     public static Category fromChoice(int choice) {
-        if (choice == 1) {
+        Category[] choices = {
+            Category.FOOD_GROCERIES,
+            Category.UTILITIES,
+            Category.ENTERTAINMENT,
+            Category.SUBSCRIPTIONS
+        }
+
+        if(choice < 1 || choice > 4){
+            System.out.println("Invalid category choice.");
+            return null;
+        }else {
+            return choices[choice]
+        }
+        /*if (choice == 1) {
             return Category.FOOD_GROCERIES;
         } else if (choice == 2) {
             return Category.UTILITIES;
@@ -37,6 +50,6 @@ public enum Category {
         } else {
             System.out.println("Invalid category choice.");
             return null;
-        }
+        }*/
     }
 }

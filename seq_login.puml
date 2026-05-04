@@ -1,0 +1,29 @@
+@startuml
+participant Main
+actor User
+participant "mainMenu: MainMenu" as mainMenu
+participant "sc: Scanner" as sc
+
+Main -> mainMenu ++: new()
+create mainMenu
+Main -> mainMenu: showMenu()
+
+
+    'activate mainMenu
+        mainMenu -> mainMenu: printBanner()
+        mainMenu --> User: result
+
+    'activate mainMenu
+        mainMenu -> mainMenu: showGuestMenu()
+        mainMenu --> User: result
+    'deactivate mainMenu
+'
+    'activate sc
+    '    mainMenu -> sc: nextLine()
+    '    User -> mainMenu: select (1)
+    'deactivate sc 
+    
+    mainMenu -> mainMenu: handleLogin()
+deactivate mainMenu
+'mainMenu -> mainMenu: handleLogin()
+@enduml
