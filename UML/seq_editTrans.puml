@@ -1,0 +1,58 @@
+@startuml
+actor user
+participant "mainMenu: MainMenu" as mainMenu
+participant "loginService: LoginService" as loginService
+
+participant "expenseService: ExpenseService" as expenseService
+participant "budgetService: BudgetService" as budgetService
+
+' showMenu() -> handleLogin() -> login(user, pass) ->
+
+activate mainMenu
+    user -> mainMenu: handleLogin()
+    
+    activate loginService
+        mainMenu -> loginService: login(username, password)
+        loginService --> mainMenu: currUser: User
+    deactivate loginService
+    mainMenu --> user: logged-in confirmation
+
+    
+    mainMenu -> mainMenu: showUserMenu()
+    'showUserMenu()
+    activate mainMenu
+        ' User chooses 2. Edit a transaction
+        mainMenu --> user: shows options
+        
+            user -> mainMenu: handleEditTransaction()
+            activate mainMenu
+                ' Enter information for a specific transaction, selectExpense()
+                mainMenu -> mainMenu: selectExpense()
+                    activate mainMenu 
+                    ' use enters information
+                    user -> mainMenu: information about expense
+                    ' expenseService finds an expense based on on info
+                    activate expenseService
+                        mainMenu -> expenseService: findExpense(currentUser, name, amount, date)
+                        expenseService --> mainMenu: Expense
+                    deactivate expenseService
+                    mainMenu --> mainMenu: expense: Expense
+                deactivate mainMenu 
+                ' end of menu: selectExpense()
+
+                mainMenu --> user: "Choose criteria to change"
+
+                ' expenseService edits
+                activate expenseService
+                    mainMenu -> expenseService: editExpense(selected, newName, newAmount, newCategory, newDate)
+                    expenseService --> user: "Edit successfull"
+                deactivate expenseService
+
+            'deactivate handleEditTransaction()
+            deactivate mainMenu 
+
+    'deactivate showUserMenu()
+    deactivate mainMenu
+
+'mainMenu: show()
+@enduml

@@ -218,7 +218,7 @@ public class MainMenu {
 	    	}
     	}
     	expenseService.editExpense(selected, newName, newAmount, newCategory, newDate);
-    	System.out.println("Transated successfully updated: " + selected);
+    	System.out.println("Transaction successfully updated: " + selected);
     }
     
     // Delete a transaction
