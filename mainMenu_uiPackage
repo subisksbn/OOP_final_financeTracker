@@ -63,18 +63,22 @@ public class MainMenu {
         System.out.println("  Hello, " + currentUser.getUsername() + "!");
         System.out.println("=============================");
         System.out.println("1. Add expense");
-        System.out.println("2. Set budget limit");
-        System.out.println("3. View spending summary");
-        System.out.println("4. Sort and view transactions");
-        System.out.println("5. Logout (saves data)");
+        System.out.println("2. Edit a transaction");
+        System.out.println("3. Delete a transaction");
+        System.out.println("4. Set budget limit");
+        System.out.println("5. View spending summary");
+        System.out.println("6. Sort and view transactions");
+        System.out.println("7. Logout (saves data)");
         System.out.print("Choice: ");
 
         switch (sc.nextLine().trim()) {
             case "1" -> handleAddExpense();
-            case "2" -> handleSetBudget();
-            case "3" -> handleViewSummary();
-            case "4" -> handleSortTransactions();
-            case "5" -> handleLogout();
+            case "2" -> handleEditTransaction();
+            case "3" -> handleDeleteTransaction(); 
+            case "4" -> handleSetBudget();
+            case "5" -> handleViewSummary();
+            case "6" -> handleSortTransactions();
+            case "7" -> handleLogout();
             default -> System.out.println("Invalid choice.");
         }
     }
@@ -118,12 +122,12 @@ public class MainMenu {
         
         //Adding date
         System.out.print("Date (YYYY-MM-DD) or press Enter for today: ");
-        String dateInput = sc.nextLine().trim();
+        String inputDate = sc.nextLine().trim();
         LocalDate date;
-        if (dateInput.isEmpty()) {
+        if (inputDate.isEmpty()) {
         	date = LocalDate.now();
         } else {
-        	date= LocalDate.parse(dateInput);
+        	date= LocalDate.parse(inputDate);
         }
 
         // Check budget before adding
@@ -135,6 +139,96 @@ public class MainMenu {
         expenseService.addExpense(currentUser, expense);
         System.out.println("Expense added: " + expense);
     }
+    
+    // Edit a Transaction
+    public void handleEditTransaction() {
+    	if (currentUser.getExpenses().isEmpty()) {
+    		System.out.println("No transcations to edit!");
+    		return;
+    	}
+    	
+    	System.out.println("\n-- Edit a Transaction --");
+    	printAllTransactions(); 
+    	
+    	Expense selected = selectExpense();
+    	
+    	if (selected == null) {
+    		return;
+    	}
+    	
+    	System.out.println("\nSelected: " + selected);
+    	System.out.println("\nChoose criteria to change:");
+    	System.out.println("1. Description");
+    	System.out.println("2. Amount");
+    	System.out.println("3. Category");
+    	System.out.println("4. Date");
+    	
+    	String newName = null;
+    	Double newAmount = null;
+    	Category newCategory = null;
+    	LocalDate newDate = null;
+    	
+    	switch (sc.nextLine().trim()) {
+	    	case "1" -> {
+	    		System.out.print("New description: ");
+	    		newName = sc.nextLine().trim();
+	    	}
+	    	case "2" -> {
+	    		newAmount = promptDouble("New amount ($): ");
+	    	}
+	    	
+	    	case "3" -> {
+	    		System.out.println ("New category: ");
+	    		Category.printMenu();
+	    		int catChoice = (int) promptDouble("Choose (1-" + Category.values().length + "): ");
+	    		newCategory = Category.fromChoice(catChoice);
+	    		if (newCategory == null) {
+	    			return;
+	    		}
+	    	}
+	    	case "4" -> {
+	    		System.out.print("New Date (YYYY-MM-DD): ");
+	    		String inputDate = sc.nextLine().trim();
+	    		newDate = LocalDate.parse(inputDate);
+	    		
+	    	}
+	    	default -> {
+	    		System.out.println("Invalid choice.");
+	    		return;
+	    	}
+    	}
+    	expenseService.editExpense(selected, newName, newAmount, newCategory, newDate);
+    	System.out.println("Transated successfully updated: " + selected);
+    }
+    
+    // Delete Transaction
+    
+    public void handleDeleteTransaction() {
+    	if (currentUser.getExpenses().isEmpty()) {
+    		System.out.println("No transaction to delete!");
+    		return;
+    	}
+    	System.out.println("\n-- Delete a Transaction --");
+    	printAllTransactions();
+    	
+    	Expense selected = selectExpense();
+    	if (selected == null) {
+    		return; 
+    	}
+    	
+    	System.out.println("\nSelected: " + selected);
+    	System.out.print("Are you sure you want to delete this transaction? (y/n): ");
+    	
+    	String confirm = sc.nextLine().trim();
+    	
+    	if (confirm.equalsIgnoreCase("y")) {
+    		expenseService.deleteExpense(currentUser, selected);
+    		System.out.println("Transaction successfully deleted.");
+    	} else {
+    		System.out.println("Delete cancelled");
+    	}
+    }
+    
 
     // Set Budget
 
@@ -246,6 +340,34 @@ public class MainMenu {
     }
 
     // Helpers
+    
+    private void printAllTransactions() {
+    	List<Expense> expenses = expenseService.sortExpenses(currentUser, SortCriteria.DATE);
+    	System.out.println();
+    	System.out.printf("  %-20s %-26s %10s  %s%n", "Description", "Category", "Amount", "Date");
+        System.out.println("  " + "-".repeat(70));
+        for (Expense e : expenses) {
+            System.out.println(e);
+        }
+    }
+    
+    private Expense selectExpense() {
+    	System.out.println("\n Enter the information of transaction you wish to select: ");
+    	System.out.print("Description: ");
+    	String name = sc.nextLine().trim();
+    	
+    	double amount = promptDouble("Amount ($): ");
+    	
+    	System.out.print("Date (YYYY-MM-DD): ");
+    	LocalDate date = LocalDate.parse(sc.nextLine().trim());
+    	
+    	Expense found = expenseService.findExpense(currentUser, name, amount, date);
+    	if (found == null) {
+    		System.out.println("No matching transaction found.");
+    	}
+    	
+    	return found; 
+    }
 
     private double promptDouble(String prompt) {
         while (true) {

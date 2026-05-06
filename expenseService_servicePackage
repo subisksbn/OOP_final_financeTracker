@@ -4,6 +4,7 @@ import model.Category;
 import model.Expense;
 import model.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,6 +42,38 @@ public class ExpenseService {
         }
 
         return sorted;
+    }
+    
+    // Find transaction - matching description, amount, and date (returns first match)
+    public Expense findExpense(User user, String name, double amount, LocalDate date) {
+    	for (Expense e: user.getExpenses()) {
+    		if (e.getName().equalsIgnoreCase(name) && e.getAmount() == amount && e.getDate().equals(date)) {
+    			return e;
+    		}
+    	}
+    	return null;
+    }
+    
+    // Delete selected transaction return true if removed and false if not found
+    public boolean deleteExpense(User user, Expense selected) {
+    	return user.getExpenses().remove(selected);
+    }
+    
+    // Edit selected transaction
+    
+    public void editExpense(Expense expense, String newName, Double newAmount, Category newCategory, LocalDate newDate) {
+    	if (newName != null && !newName.isBlank()) {
+    		expense.setName(newName);
+    	}
+    	if (newAmount != null) {
+    		expense.setAmount(newAmount);
+    	}
+    	if (newCategory != null) {
+    		expense.setCategory(newCategory);
+    	}
+    	if (newDate != null) {
+    		expense.setDate(newDate);
+    	}
     }
 
     // Enum for sort options

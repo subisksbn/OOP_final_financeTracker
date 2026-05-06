@@ -15,7 +15,7 @@ public class Expense {
         this.date = date;
     }
 
-    // Getters
+    // Getters + Setters
     public String getName() {
     	return name;
     }
@@ -27,6 +27,18 @@ public class Expense {
     }
     public LocalDate getDate() {
     	return date;
+    }
+    public void setName(String name) {
+    	this.name = name;
+    }
+    public void setAmount(double amount) {
+    	this.amount = amount;
+    }
+    public void setCategory(Category category) {
+    	this.category = category;
+    }
+    public void setDate(LocalDate date) {
+    	this.date = date;
     }
 
     // CSV format: name,amount,CATEGORY_ENUM,date
