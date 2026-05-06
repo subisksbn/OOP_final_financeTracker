@@ -1,0 +1,21 @@
+@startuml
+' -> mainMenu: handleViewSummary()
+' loop over Category.values()
+' -> currentUser (User):    getBudget(category).limit()
+' -> expenseService:    getTotalByCategory(currentUser, category)
+' -> budgetService:     getRemainingBudget(currentUser, category)
+actor user
+participant "mainMenu: MainMenu" as mainMenu
+participant "loginService: LoginService" as loginService
+participant "expenseService: ExpenseService" as expenseService
+participant "budgetService: BudgetService" as budgetService
+
+user -> mainMenu: handleViewSummary()
+mainMenu -> Category: values()
+loop each category of expense as c
+    mainMenu -> currentUser: getBudget(c)
+    mainMenu -> expenseService: getTotalByCategory(currUser, c)
+    mainMenu -> budgetService: getRemainingBudget(currUser, c)
+end
+mainMenu --> actor: result
+@enduml

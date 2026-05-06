@@ -118,7 +118,7 @@ public class MainMenu {
 
         System.out.print("Description (e.g. Trader Joe's): ");
         String name = sc.nextLine().trim();
-        // 
+    
         double amount = promptDouble("Amount ($): ");
 
         System.out.println("Category:");
@@ -267,21 +267,22 @@ public class MainMenu {
         System.out.println("Budget set: $" + String.format("%.2f", limit) + " for " + category.getDisplayName());
     }
 
-    // View Summary
-
+    // view summary of all expenses
     public void handleViewSummary() {
         System.out.println("\n======= SPENDING SUMMARY =======");
+        // format columns/table headers
         System.out.printf("%-28s %10s %12s %12s%n", "Category", "Spent", "Budget", "Remaining");
         System.out.println("-".repeat(64));
 
         double grandTotal = 0;
-
+        // sum of all expenses for each category
         for (Category c : Category.values()) {
             double spent = expenseService.getTotalByCategory(currentUser, c);
             double remaining = budgetService.getRemainingBudget(currentUser, c);
             double limit = currentUser.getBudget(c).getLimit();
             grandTotal += spent;
             
+            // limit set?
             String budgetStr = (limit > 0) ? String.format("$%, .2f", limit) : "not set"
             /*if (limit > 0) {
             	budgetStr = String.format("$%, .2f", limit);
@@ -294,8 +295,9 @@ public class MainMenu {
                 String.format("-$%,.2f !!!", Math.abs(remaining)),
                 String.format("$%,.2f", remaining)
             }
-            String remainingStr = values[(limit <= 0) ? 0 : (
-                (remaining < 0) ? 1 : 2)];
+            String remainingStr = values[
+                (limit <= 0) ? 0 : (
+                    (remaining < 0) ? 1 : 2)];
             
             /*if (limit <= 0) {
             	remainingStr = "  --";
