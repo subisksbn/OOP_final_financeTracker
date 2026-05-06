@@ -1,17 +1,18 @@
 package ui;
 
-import model.Category;
-import model.Expense;
-import model.User;
-import service.*;
-import service.ExpenseService.SortCriteria;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-public class MainMenu {
+// system objects
+import model.Category;
+import model.Expense;
+import model.User;
+// services
+import service.*;
+import service.ExpenseService.SortCriteria;
 
+public class MainMenu {
     private Scanner sc = new Scanner(System.in);
 
     private DataManager dataManager;
@@ -30,8 +31,7 @@ public class MainMenu {
         budgetService = new BudgetService(expenseService);
     }
 
-    // Menu Beginning Point
-
+    // mount the menu to the screen
     public void showMenu() {
         printTitle();
         while (true) {
@@ -44,7 +44,6 @@ public class MainMenu {
     }
 
     // Menu before login (guest)
-
     private void showGuestMenu() {
         System.out.println("\n1. Login");
         System.out.println("2. Exit");
