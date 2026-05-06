@@ -31,13 +31,13 @@ public enum Category {
             Category.UTILITIES,
             Category.ENTERTAINMENT,
             Category.SUBSCRIPTIONS
-        }
+        };
 
         if(choice < 1 || choice > 4){
             System.out.println("Invalid category choice.");
             return null;
         }else {
-            return choices[choice]
+            return choices[choice];
         }
         /*if (choice == 1) {
             return Category.FOOD_GROCERIES;
