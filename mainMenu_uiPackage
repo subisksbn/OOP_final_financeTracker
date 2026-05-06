@@ -34,7 +34,7 @@ public class MainMenu {
     // mount the menu to the screen
     public void showMenu() {
         printTitle();
-        while (true) {
+        while (true) { //<--
             if (currentUser == null) {
                 showGuestMenu();
             } else {
@@ -43,12 +43,13 @@ public class MainMenu {
         }
     }
 
-    // Menu before login (guest)
+    // UI for un-authenticated user
     private void showGuestMenu() {
         System.out.println("\n1. Login");
         System.out.println("2. Exit");
         System.out.print("Choice: ");
-
+        // the user can login with their credentials 
+        // or exit
         switch (sc.nextLine().trim()) {
             case "1" -> handleLogin();
             case "2" -> exitApp();
@@ -56,21 +57,30 @@ public class MainMenu {
         }
     }
 
-    // Menu after login (user)
-
+    // UI for authenticated user
     private void showUserMenu() {
         System.out.println("\n=============================");
         System.out.println("  Hello, " + currentUser.getUsername() + "!");
         System.out.println("=============================");
-        System.out.println("1. Add expense");
+        System.out.println("""
+                1. Add expense
+                2. Edit a transaction
+                3. Delete a transaction
+                4. Set budget limit
+                5. View spending summary
+                6. Sort and view transactions
+                7. Logout (saves data)
+        """;)
+        /*System.out.println("1. Add expense");
         System.out.println("2. Edit a transaction");
         System.out.println("3. Delete a transaction");
         System.out.println("4. Set budget limit");
         System.out.println("5. View spending summary");
         System.out.println("6. Sort and view transactions");
-        System.out.println("7. Logout (saves data)");
+        System.out.println("7. Logout (saves data)");*/
         System.out.print("Choice: ");
-
+        
+        // get choice, trigger appropriate action
         switch (sc.nextLine().trim()) {
             case "1" -> handleAddExpense();
             case "2" -> handleEditTransaction();
@@ -84,31 +94,31 @@ public class MainMenu {
     }
 
     // Login
-
     public void handleLogin() {
         System.out.print("Username: ");
         String username = sc.nextLine().trim();
         System.out.print("Password: ");
         String password = sc.nextLine().trim();
 
+        // authenticate user
         User user = loginService.login(username, password);
 
         if (user != null) {
             currentUser = user;
-            System.out.println("\nLogin successful! Welcome, " + currentUser.getUsername() + ".");
+            //System.out.println("\n" + currentUser.getUsername() + "is logged in.");
+            System.out.printf("\n%s is logged in", currentUser.getUsername());
         } else {
-            System.out.println("Invalid username or password. Please try again.");
+            System.out.println("Invalid username or password. Try again.");
         }
     }
 
-    // Add Expense
-
+    // add Expense
     public void handleAddExpense() {
         System.out.println("\n-- Add Expense --");
 
         System.out.print("Description (e.g. Trader Joe's): ");
         String name = sc.nextLine().trim();
-
+        // 
         double amount = promptDouble("Amount ($): ");
 
         System.out.println("Category:");
