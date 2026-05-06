@@ -35,10 +35,15 @@ class DataManager{
     +saveBudgetsForUser(user: User)
 }
 class User 
+
+'Dependencies
+'Uses:
 MainMenu ..> DataManager 
 MainMenu ..> LoginService 
 MainMenu ..> ExpenseService 
 MainMenu ..> BudgetService
+MainMenu ..> Category 
+MainMenu ..> Expense
 
 MainMenu o--> User
 DataManager o--> User

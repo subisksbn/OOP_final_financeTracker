@@ -7,6 +7,7 @@
 actor user
 participant "mainMenu: MainMenu" as mainMenu
 participant "currUser: User" as currUser
+participant "budget: Budget" as budget
 participant "budgetService: BudgetService" as budgetService
 participant "expenseService: ExpenseService" as expenseService
 'participant "loginService: LoginService" as loginService
@@ -14,9 +15,29 @@ participant "expenseService: ExpenseService" as expenseService
 user -> mainMenu: handleViewSummary()
 'mainMenu -> Category: values()
 loop each category of expense as c
-    mainMenu -> currUser: getBudget(c)
+    activate currUser
+        mainMenu -> currUser: getBudget(c)
+        currUser --> mainMenu: budget: Budget
+    deactivate currUser
+
+    activate budget
+        mainMenu -> budget: getLimit()
+        budget --> mainMenu: limit: double
+    deactivate budget
+
+    activate budgetService
     mainMenu -> budgetService: getRemainingBudget(currUser, c)
+    budgetService --> mainMenu: remaining: double
+    deactivate budgetService
+
+    activate expenseService
     mainMenu -> expenseService: getTotalByCategory(currUser, c)
+    expenseService --> mainMenu: total: double
+    deactivate expenseService
+
+    ' result for each category 
+    mainMenu --> user: results for category c
 end
-mainMenu --> actor: result
+
+mainMenu --> user: grand total 
 @enduml
