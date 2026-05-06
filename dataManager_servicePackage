@@ -24,9 +24,9 @@ public class DataManager {
     }
     // load all users from "database" (i.e. users.csv)
     public List<User> loadUsers() {
-        File usersFile = new File(USERS_FILE)
+        File usersFile = new File(USERS_FILE);
         // logging
-    	System.out.println("Looking for: " + usersFile.getAbsolutePath())//.getAbsolutePath());
+    	System.out.println("Looking for: " + usersFile.getAbsolutePath());//.getAbsolutePath());
         
         List<User> users = new ArrayList<>();
         
@@ -54,7 +54,7 @@ public class DataManager {
 
     // save all the users to users.cs v
     public void saveUsers(List<User> users) {
-        FileWriter fw = new FileWriter(USERS_FILE)
+        FileWriter fw = new FileWriter(USERS_FILE);
         try (PrintWriter writer = new PrintWriter(fw)) {//new FileWriter(USERS_FILE))) {
             for (User u:users) {
                 // convert user Object to csv format
