@@ -24,17 +24,16 @@ public class DataManager {
     }
     // load all users from "database" (i.e. users.csv)
     public List<User> loadUsers() {
-        File usersFile = new File(USERS_FILE)
+        File usersFile = new File(USERS_FILE);
         // logging
-    	System.out.println("Looking for: " + usersFile.getAbsolutePath())//.getAbsolutePath());
+    	System.out.println("Looking for: " + usersFile.getAbsolutePath());//.getAbsolutePath());
         
         List<User> users = new ArrayList<>();
         
         //File file = usersFile//new File(USERS_FILE);
         if (!usersFile.exists()) return users;
 
-        FileReader fileReader = new FileReader(usersFile);
-        try (BufferedReader reader = new BufferedReader(fileReader)) {//new FileReader(usersFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(usersFile))) {//new FileReader(usersFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) continue;
@@ -54,8 +53,7 @@ public class DataManager {
 
     // save all the users to users.cs v
     public void saveUsers(List<User> users) {
-        FileWriter fw = new FileWriter(USERS_FILE)
-        try (PrintWriter writer = new PrintWriter(fw)) {//new FileWriter(USERS_FILE))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(USERS_FILE))) {//new FileWriter(USERS_FILE))) {
             for (User u:users) {
                 // convert user Object to csv format
                 writer.println(u.toCSV());
@@ -72,8 +70,7 @@ public class DataManager {
         File file = new File(EXPENSES_DIR + user.getUserId() + ".csv");
         if (!file.exists()) return;
 
-        FileReader fr = new FileReader(file);
-        try (BufferedReader reader = new BufferedReader(fr)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.isBlank()) {

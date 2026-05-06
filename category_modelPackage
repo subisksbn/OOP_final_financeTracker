@@ -18,26 +18,20 @@ public enum Category {
     }
     // display all categories as a numbered menu
     public static void printMenu() {
-        System.out.println("1. Food & Groceries");
-        System.out.println("2. Utilities");
-        System.out.println("3. Entertainment");
-        System.out.println("4. Auto-renewal Subscriptions");
+        Category[] values = Category.values();
+        for (int i = 0; i < values.length; i++) {
+            System.out.println((i + 1) + ". " + values[i].getDisplayName());
+        }
     }
 
     // map menu number to a category
     public static Category fromChoice(int choice) {
-        Category[] choices = {
-            Category.FOOD_GROCERIES,
-            Category.UTILITIES,
-            Category.ENTERTAINMENT,
-            Category.SUBSCRIPTIONS
-        }
-
-        if(choice < 1 || choice > 4){
+        Category[] choices = Category.values();
+        if(choice < 1 || choice > choices.length){
             System.out.println("Invalid category choice.");
             return null;
         }else {
-            return choices[choice]
+            return choices[choice-1];
         }
         /*if (choice == 1) {
             return Category.FOOD_GROCERIES;

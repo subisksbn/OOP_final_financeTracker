@@ -70,7 +70,7 @@ public class MainMenu {
                 5. View spending summary
                 6. Sort and view transactions
                 7. Logout (saves data)
-        """;)
+        """);
         /*System.out.println("1. Add expense");
         System.out.println("2. Edit a transaction");
         System.out.println("3. Delete a transaction");
@@ -175,7 +175,7 @@ public class MainMenu {
         2. Amount
         3. Category
         4. Date
-        """;)
+        """);
     	/*System.out.println("\nChoose criteria to change:");
     	System.out.println("1. Description");
     	System.out.println("2. Amount");
@@ -282,8 +282,7 @@ public class MainMenu {
             double limit = currentUser.getBudget(c).getLimit();
             grandTotal += spent;
             
-            // limit set?
-            String budgetStr = (limit > 0) ? String.format("$%, .2f", limit) : "not set"
+            String budgetStr = (limit > 0) ? String.format("$%, .2f", limit) : "not set";
             /*if (limit > 0) {
             	budgetStr = String.format("$%, .2f", limit);
             } else {
@@ -294,10 +293,9 @@ public class MainMenu {
                 "  --",
                 String.format("-$%,.2f !!!", Math.abs(remaining)),
                 String.format("$%,.2f", remaining)
-            }
-            String remainingStr = values[
-                (limit <= 0) ? 0 : (
-                    (remaining < 0) ? 1 : 2)];
+            };
+            String remainingStr = values[(limit <= 0) ? 0 : (
+                (remaining < 0) ? 1 : 2)];
             
             /*if (limit <= 0) {
             	remainingStr = "  --";
