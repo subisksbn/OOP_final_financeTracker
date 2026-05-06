@@ -26,18 +26,12 @@ public enum Category {
 
     // map menu number to a category
     public static Category fromChoice(int choice) {
-        Category[] choices = {
-            Category.FOOD_GROCERIES,
-            Category.UTILITIES,
-            Category.ENTERTAINMENT,
-            Category.SUBSCRIPTIONS
-        };
-
-        if(choice < 1 || choice > 4){
+        Category[] choices = Category.values();
+        if(choice < 1 || choice > choices.length){
             System.out.println("Invalid category choice.");
             return null;
         }else {
-            return choices[choice];
+            return choices[choice-1];
         }
         /*if (choice == 1) {
             return Category.FOOD_GROCERIES;
