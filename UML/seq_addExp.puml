@@ -1,0 +1,52 @@
+@startuml
+actor user
+participant "mainMenu: MainMenu" as mainMenu
+participant "loginService: LoginService" as loginService
+participant "budgetService: BudgetService" as budgetService
+
+' showMenu() -> handleLogin() -> login(user, pass) ->
+
+activate mainMenu
+    user -> mainMenu: handleLogin()
+    
+    activate loginService
+        mainMenu -> loginService: login(username, password)
+        loginService --> mainMenu: currUser: User
+    deactivate loginService
+    mainMenu --> user: logged-in confirmation
+
+    
+    mainMenu -> mainMenu: showUserMenu()
+    'showUserMenu()
+    activate mainMenu
+        ' User chooses 1. Add Expense
+        mainMenu --> user: shows options
+        
+            user -> mainMenu: handleAddExpense()
+            activate mainMenu
+                ' Choose category of expense
+                mainMenu --> user: choose category in which to add expense
+                'user -> mainMenu: some category as c
+
+                ' System checks budget limit
+                activate budgetService
+                    mainMenu -> budgetService: checkBudget(currUser, category, amount)
+                    budgetService --> mainMenu: result: boolean
+                deactivate budgetService
+
+                'Adds expense
+                create Expense
+                mainMenu ->  Expense: new(name, amount, category, date)
+                
+                mainMenu -> "expenseService: ExpenseService" as expenseService: addExpense(currUser, exp: Expense)
+                activate expenseService
+                deactivate expenseService
+
+                mainMenu --> user: "Expense added"
+            'deactivate handleAddExpense()
+            deactivate mainMenu 
+    'deactivate showUserMenu()
+    deactivate mainMenu
+
+'mainMenu: show()
+@enduml
