@@ -125,12 +125,13 @@ public class MainMenu {
         Category.printMenu();
         int catChoice = (int) promptDouble("Choose (1-" + Category.values().length + "): ");
        
+        // use the object's methods
         Category category = Category.fromChoice(catChoice);
         if (category == null) {
             return;
         }
         
-        //Adding date
+        // add a  date
         System.out.print("Date (YYYY-MM-DD) or press Enter for today: ");
         String inputDate = sc.nextLine().trim();
         LocalDate date;
@@ -142,7 +143,8 @@ public class MainMenu {
 
         // Check budget before adding
         if (budgetService.checkBudget(currentUser, category, amount)) {
-            System.out.println("\n  *** WARNING: You have exceeded your monthly budget for " + category.getDisplayName() + "! ***\n");
+            System.out.printf("\n*** WARNING: You have exceeded your monthly budget for %s! ***\n",
+                category.getDisplayName());
         }
 
         Expense expense = new Expense(name, amount, category, date);
@@ -167,17 +169,25 @@ public class MainMenu {
     	}
     	
     	System.out.println("\nSelected: " + selected);
-    	System.out.println("\nChoose criteria to change:");
+        System.out.println("""
+        \nChoose criteria to change:
+        1. Description
+        2. Amount
+        3. Category
+        4. Date
+        """;)
+    	/*System.out.println("\nChoose criteria to change:");
     	System.out.println("1. Description");
     	System.out.println("2. Amount");
     	System.out.println("3. Category");
-    	System.out.println("4. Date");
+    	System.out.println("4. Date");*/
     	
     	String newName = null;
     	Double newAmount = null;
     	Category newCategory = null;
     	LocalDate newDate = null;
     	
+        // get choice
     	switch (sc.nextLine().trim()) {
 	    	case "1" -> {
 	    		System.out.print("New description: ");
@@ -211,11 +221,10 @@ public class MainMenu {
     	System.out.println("Transated successfully updated: " + selected);
     }
     
-    // Delete Transaction
-    
+    // Delete a transaction
     public void handleDeleteTransaction() {
     	if (currentUser.getExpenses().isEmpty()) {
-    		System.out.println("No transaction to delete!");
+    		System.out.println("No transactions to delete!");
     		return;
     	}
     	System.out.println("\n-- Delete a Transaction --");
@@ -240,8 +249,7 @@ public class MainMenu {
     }
     
 
-    // Set Budget
-
+    // set Budget
     public void handleSetBudget() {
         System.out.println("\n-- Set Monthly Budget Limit --");
         System.out.println("Categories:");
@@ -274,31 +282,43 @@ public class MainMenu {
             double limit = currentUser.getBudget(c).getLimit();
             grandTotal += spent;
             
-            String budgetStr;
-            if (limit > 0) {
+            String budgetStr = (limit > 0) ? String.format("$%, .2f", limit) : "not set"
+            /*if (limit > 0) {
             	budgetStr = String.format("$%, .2f", limit);
             } else {
             	budgetStr = "not set";
-            }
+            }*/
             
-            String remainingStr;
-            if (limit <= 0) {
+            String[] values = {
+                "  --",
+                String.format("-$%,.2f !!!", Math.abs(remaining)),
+                String.format("$%,.2f", remaining)
+            }
+            String remainingStr = values[(limit <= 0) ? 0 : (
+                (remaining < 0) ? 1 : 2)];
+            
+            /*if (limit <= 0) {
             	remainingStr = "  --";
             } else if (remaining < 0) {
             	remainingStr = String.format("-$%,.2f !!!", Math.abs(remaining));
             } else {
             	remainingStr = String.format("$%,.2f", remaining);
-            }
+            }*/
             
-            System.out.printf("%-28s %10s %12s %12s%n", c.getDisplayName(), String.format("$%,.2f", spent), budgetStr, remainingStr);
+            System.out.printf("%-28s %10s %12s %12s%n", 
+                c.getDisplayName(), 
+                String.format("$%,.2f", spent), 
+                budgetStr, 
+                remainingStr);
         }
 
         System.out.println("-".repeat(64));
-        System.out.printf("%-28s %10s%n", "TOTAL SPENT", String.format("$%,.2f", grandTotal));
+        System.out.printf("%-28s %10s%n", 
+            "TOTAL SPENT", 
+            String.format("$%,.2f", grandTotal));
     }
 
-    // Sort Transactions
-
+    // sorting transactions
     public void handleSortTransactions() {
         if (currentUser.getExpenses().isEmpty()) {
             System.out.println("No transactions to display.");
