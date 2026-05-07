@@ -1,4 +1,5 @@
 @startuml
+title Add Expense
 actor user
 participant "mainMenu: MainMenu" as mainMenu
 participant "loginService: LoginService" as loginService
