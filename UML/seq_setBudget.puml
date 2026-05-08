@@ -1,0 +1,54 @@
+@startuml
+title 4. Set Budget Limit
+actor user
+participant "mainMenu:\nMainMenu" as mainMenu
+participant "loginService:\nLoginService" as loginService
+
+participant "budgetService:\nBudgetService" as budgetService
+participant "currUser:\nUser" as currUser
+participant "budget:\nBudget" as budget
+
+' FIRST login
+activate mainMenu
+user -> mainMenu: handleLogin()
+    activate loginService
+        mainMenu -> loginService: login(username, password)
+        loginService --> mainMenu: currUser: User
+    deactivate loginService
+    mainMenu --> user: "You are logged in"
+deactivate mainMenu
+' now logged in, proceed'
+
+'showUserMenu()
+user -> mainMenu: showUserMenu()
+activate mainMenu
+    ' User chooses 4. Set budget on a category of expenses
+    mainMenu --> user: shows options
+    
+    'handleSetBudget()
+    user -> mainMenu: handleSetBudget()
+    activate mainMenu
+
+        mainMenu -> budgetService: setBudgetLimit(currentUser, category, limit);
+        activate budgetService 
+            'get budget from user
+            activate currUser
+                budgetService -> currUser: getBudget(category)
+                currUser --> budgetService: Budget
+            deactivate currUser
+            'activate Budget 
+            activate budget 
+                budgetService -> budget: setLimit(limit)
+            deactivate budget
+        
+        deactivate budgetService 
+
+        mainMenu --> user: "Set new budget"
+    'deactivate handleSetBudget()
+    deactivate mainMenu 
+
+'deactivate showUserMenu()
+'deactivate mainMenu
+
+'mainMenu: show()
+@enduml

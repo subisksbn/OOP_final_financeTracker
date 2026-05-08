@@ -1,64 +1,79 @@
 @startuml
-title Delete Transaction
+title 3. Delete Transaction
 actor user
-participant "mainMenu: MainMenu" as mainMenu
-participant "loginService: LoginService" as loginService
-participant "expenseService: ExpenseService" as expenseService
-participant "currUser: User" as currUser
-participant "allExpenses: List<Expense>" as allExpenses
+participant "mainMenu:\nMainMenu" as mainMenu
+participant "loginService:\nLoginService" as loginService
+participant "expenseService:\nExpenseService" as expenseService
+participant "currUser:\nUser" as currUser
+participant "expenseList:\nList<Expense>" as expenseList
 
+' FIRST login
 activate mainMenu
-    user -> mainMenu: handleLogin()
-    
+user -> mainMenu: handleLogin()
     activate loginService
         mainMenu -> loginService: login(username, password)
         loginService --> mainMenu: currUser: User
     deactivate loginService
-    mainMenu --> user: logged-in confirmation
+    mainMenu --> user: "You are logged in"
+deactivate mainMenu
+' now logged in, proceed'
 
+'showUserMenu()
+user -> mainMenu: showUserMenu()
+activate mainMenu
+    ' User chooses 3. Delete a transaction
+    mainMenu --> user: shows options
     
-    mainMenu -> mainMenu: showUserMenu()
-    'showUserMenu()
+    'handleDeleteTransaction()
+    user -> mainMenu: handleDeleteTransaction()
     activate mainMenu
-        ' User chooses 3. Delete a transaction
-        mainMenu --> user: shows options
-        
-            user -> mainMenu: handleDeleteTransaction()
-            activate mainMenu
+            ' Show all current transactions
+            mainMenu -> mainMenu: printAllTransactions()
+            activate mainMenu 
 
-                ' Show all current transactions
-                mainMenu -> mainMenu: printAllTransactions()
-                    activate mainMenu 
-                    mainMenu --> user: results
-                    deactivate mainMenu 
-                ' end of menu: printAllTransactions()
-
-                mainMenu -> mainMenu: selectExpense()
-                    activate mainMenu
-                    
-                    mainMenu -> expenseService: findExpense(currentUser, name, amount, date)
-                    activate expenseService
-                    expenseService --> mainMenu: expense: Expense
-                    deactivate expenseService
-
-                    mainMenu --> mainMenu: expense: Expense
-                    deactivate mainMenu
-                ' end of selectExpense
-
-                mainMenu -> expenseService: deleteExpense(currUser, expense)
                 activate expenseService
-                    expenseService -> currUser: getExpenses()
-                    currUser --> expenseService: allExpenses: List<Expense>
-                    expenseService -> allExpenses: remove(expense)
+                mainMenu -> expenseService: sortExpenses(currUser, date)
+                    activate currUser
+                        expenseService -> currUser: getExpenses()
+                        currUser --> expenseService: List<Expense>
+                    deactivate currUser
+                    expenseService -> expenseList: sort()
+
+                    expenseService --> mainMenu: expenseList: List<Expense>
+                deactivate expenseService
+                
+                'show all expenses
+                loop for expense in\nexpenses as e
+                    mainMenu --> user: results
+                end
+            deactivate mainMenu 
+            ' end of menu: printAllTransactions()
+
+            user -> mainMenu: selectExpense()
+            activate mainMenu    
+                mainMenu -> expenseService: findExpense(currentUser, name, amount, date)
+                activate expenseService
+                expenseService --> mainMenu: expense: Expense
                 deactivate expenseService
 
-                mainMenu --> user: "Succesfull deletion of transaction
+                mainMenu --> mainMenu: expense: Expense
+            deactivate mainMenu
+            ' end of selectExpense
 
-            'deactivate handleDeleteTransaction()
-            deactivate mainMenu 
+            mainMenu -> expenseService: deleteExpense(currUser, expense)
+            activate expenseService
+                expenseService -> currUser: getExpenses()
+                currUser --> expenseService: allExpenses: List<Expense>
+                expenseService -> expenseList: remove(expense)
+            deactivate expenseService
 
-    'deactivate showUserMenu()
-    deactivate mainMenu
+            mainMenu --> user: "Succesfull deletion of transaction
+
+        'deactivate handleDeleteTransaction()
+        deactivate mainMenu 
+
+'deactivate showUserMenu()
+'deactivate mainMenu
 
 'mainMenu: show()
 @enduml

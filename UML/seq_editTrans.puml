@@ -1,59 +1,83 @@
 @startuml
-title Edit Transaction
+title 2. Edit Transaction
 actor user
-participant "mainMenu: MainMenu" as mainMenu
-participant "loginService: LoginService" as loginService
+participant "mainMenu:\nMainMenu" as mainMenu
+participant "loginService:\nLoginService" as loginService
 
-participant "expenseService: ExpenseService" as expenseService
-participant "budgetService: BudgetService" as budgetService
+participant "expenseService:\nExpenseService" as expenseService
+participant "currUser:\nUser" as currUser
+participant "expenseList:\nList" as expenseList
+participant "selectedExpense:\nExpense" as selectedExpense
 
-' showMenu() -> handleLogin() -> login(user, pass) ->
-
+' FIRST login
 activate mainMenu
-    user -> mainMenu: handleLogin()
-    
+user -> mainMenu: handleLogin()
     activate loginService
         mainMenu -> loginService: login(username, password)
         loginService --> mainMenu: currUser: User
     deactivate loginService
-    mainMenu --> user: logged-in confirmation
+    mainMenu --> user: "You are logged in"
+deactivate mainMenu
+' now logged in, proceed'
 
-    
-    mainMenu -> mainMenu: showUserMenu()
-    'showUserMenu()
-    activate mainMenu
-        ' User chooses 2. Edit a transaction
-        mainMenu --> user: shows options
+'showUserMenu()
+user -> mainMenu: showUserMenu()
+activate mainMenu
+    ' User chooses 2. Edit a transaction
+    mainMenu --> user: shows options
         
-            user -> mainMenu: handleEditTransaction()
-            activate mainMenu
-                ' Enter information for a specific transaction, selectExpense()
-                mainMenu -> mainMenu: selectExpense()
-                    activate mainMenu 
-                    ' use enters information
-                    user -> mainMenu: information about expense
-                    ' expenseService finds an expense based on on info
-                    activate expenseService
-                        mainMenu -> expenseService: findExpense(currentUser, name, amount, date)
-                        expenseService --> mainMenu: Expense
-                    deactivate expenseService
-                    mainMenu --> mainMenu: expense: Expense
-                deactivate mainMenu 
-                ' end of menu: selectExpense()
+        user -> mainMenu: handleEditTransaction()
+        activate mainMenu
 
-                mainMenu --> user: "Choose criteria to change"
+            ' Show all current transactions
+            mainMenu -> mainMenu: printAllTransactions()
+            activate mainMenu 
 
-                ' expenseService edits
                 activate expenseService
-                    mainMenu -> expenseService: editExpense(selected, newName, newAmount, newCategory, newDate)
-                    expenseService --> user: "Edit successfull"
+                mainMenu -> expenseService: sortExpenses(currUser, date)
+                    activate currUser
+                        expenseService -> currUser: getExpenses()
+                        currUser --> expenseService: List<Expense>
+                    deactivate currUser
+                    expenseService -> expenseList: sort()
+
+                    expenseService --> mainMenu: expenseList: List<Expense>
                 deactivate expenseService
-
-            'deactivate handleEditTransaction()
+                
+                'show all expenses
+                loop for expense in\nexpenses as e
+                    mainMenu --> user: results
+                end
             deactivate mainMenu 
+            ' end of menu: printAllTransactions()
 
-    'deactivate showUserMenu()
-    deactivate mainMenu
+            ' Enter information for a specific transaction, selectExpense()
+            user -> mainMenu: selectExpense()
+            activate mainMenu 
+                ' expenseService finds an expense based on on info
+                activate expenseService
+                    mainMenu -> expenseService: findExpense(\n\tcurrentUser, name,\n\tamount, date)
+                    expenseService --> mainMenu: expense: Expense
+                deactivate expenseService
+                mainMenu --> mainMenu: selectedExpense: Expense
+            deactivate mainMenu 
+            ' end of menu: selectExpense()
+
+            ' expenseService edits
+            mainMenu -> expenseService: editExpense(\n\tselectedExpense, newName,\n\tnewAmount, newCategory, newDate)
+            activate expenseService
+                expenseService -> selectedExpense: setName(newName) 
+                expenseService -> selectedExpense: setAmount(newAmount)
+                expenseService -> selectedExpense: setCategory(newCategory)  
+                expenseService -> selectedExpense: setDate(newDate) 
+            deactivate expenseService
+
+            mainMenu --> user: "Edit successfull"
+        'deactivate handleEditTransaction()
+        deactivate mainMenu 
+
+'deactivate showUserMenu()
+'deactivate mainMenu
 
 'mainMenu: show()
 @enduml

@@ -1,0 +1,50 @@
+@startuml
+title 6. Sort and View Transactions
+actor user
+participant "mainMenu:\nMainMenu" as mainMenu
+participant "loginService:\nLoginService" as loginService
+participant "expenseService:\nExpenseService" as expenseService
+participant "currUser:\nUser" as currUser
+participant "expenseList:\nList" as expenseList
+
+' FIRST login
+activate mainMenu
+user -> mainMenu: handleLogin()
+    activate loginService
+        mainMenu -> loginService: login(username,password)
+        loginService --> mainMenu: currUser: User
+    deactivate loginService
+    mainMenu --> user: "You are logged in"
+deactivate mainMenu
+' now logged in, proceed'
+
+user -> mainMenu: showUserMenu()
+activate mainMenu
+    ' User chooses 6. Sort transactions
+    mainMenu --> user: shows options
+    
+    'handleSortTransactions()
+    user -> mainMenu: handleSortTransactions()
+    activate mainMenu
+
+        'expenseService
+        mainMenu -> expenseService: sortExpenses(currentUser, criteria)
+        activate expenseService 
+            activate currUser
+                expenseService -> currUser: getExpenses()
+                currUser --> expenseService: List<Expense>
+            deactivate currUser
+            expenseService -> expenseList: sort()
+
+            expenseService --> mainMenu: expenseList: List<Expense>
+        deactivate expenseService 
+
+        mainMenu --> user: results
+    'deactivate handleSetBudget()
+    deactivate mainMenu 
+
+'deactivate showUserMenu()
+'deactivate mainMenu
+
+'mainMenu: show()
+@enduml

@@ -50,7 +50,7 @@ public class MainMenu {
         System.out.print("Choice: ");
         // the user can login with their credentials 
         // or exit
-        switch (sc.nextLine().trim()) {
+        switch(sc.nextLine().trim()) {
             case "1" -> handleLogin();
             case "2" -> exitApp();
             default -> System.out.println("Invalid choice.");

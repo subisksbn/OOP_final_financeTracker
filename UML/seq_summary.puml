@@ -1,43 +1,60 @@
 @startuml
-' -> mainMenu: handleViewSummary()
-' loop over Category.values()
-' -> currentUser (User):    getBudget(category).limit()
-' -> expenseService:    getTotalByCategory(currentUser, category)
-' -> budgetService:     getRemainingBudget(currentUser, category)
+title 5. View Summary
 actor user
-participant "mainMenu: MainMenu" as mainMenu
-participant "currUser: User" as currUser
-participant "budget: Budget" as budget
-participant "budgetService: BudgetService" as budgetService
-participant "expenseService: ExpenseService" as expenseService
+participant "mainMenu:\nMainMenu" as mainMenu
+participant "loginService:\nLoginService" as loginService
+participant "currUser:\nUser" as currUser
+participant "budget:\nBudget" as budget
+participant "budgetService:\nBudgetService" as budgetService
+participant "expenseService:\nExpenseService" as expenseService
 'participant "loginService: LoginService" as loginService
 
-user -> mainMenu: handleViewSummary()
-'mainMenu -> Category: values()
-loop each category of expense as c
-    activate currUser
-        mainMenu -> currUser: getBudget(c)
-        currUser --> mainMenu: budget: Budget
-    deactivate currUser
+' FIRST login
+activate mainMenu
+user -> mainMenu: handleLogin()
+    activate loginService
+        mainMenu -> loginService: login(username,password)
+        loginService --> mainMenu: currUser: User
+    deactivate loginService
+    mainMenu --> user: "You are logged in"
+deactivate mainMenu
+' now logged in, proceed'
 
-    activate budget
-        mainMenu -> budget: getLimit()
-        budget --> mainMenu: limit: double
-    deactivate budget
+user -> mainMenu: showUserMenu()
+activate mainMenu
+    ' User chooses 5. View summary
+    mainMenu --> user: shows options
 
-    activate budgetService
-    mainMenu -> budgetService: getRemainingBudget(currUser, c)
-    budgetService --> mainMenu: remaining: double
-    deactivate budgetService
+    user -> mainMenu: handleViewSummary()
+    activate mainMenu
+        'mainMenu -> Category: values()
+        loop each category of expense as c
+            activate currUser
+                mainMenu -> currUser: getBudget(c)
+                currUser --> mainMenu: budget: Budget
+            deactivate currUser
 
-    activate expenseService
-    mainMenu -> expenseService: getTotalByCategory(currUser, c)
-    expenseService --> mainMenu: total: double
-    deactivate expenseService
+            activate budget
+                mainMenu -> budget: getLimit()
+                budget --> mainMenu: limit: double
+            deactivate budget
 
-    ' result for each category 
-    mainMenu --> user: results for category c
-end
+            activate budgetService
+            mainMenu -> budgetService: getRemainingBudget(currUser, c)
+            budgetService --> mainMenu: remaining: double
+            deactivate budgetService
+
+            activate expenseService
+            mainMenu -> expenseService: getTotalByCategory(currUser, c)
+            expenseService --> mainMenu: total: double
+            deactivate expenseService
+
+            ' result for each category 
+            mainMenu --> user: results for category c
+        end
+    deactivate mainMenu
+
+deactivate mainMenu
 
 mainMenu --> user: grand total 
 @enduml
