@@ -1,0 +1,50 @@
+@startuml
+class MainMenu {
+    -sc: Scanner 
+    -dataManager: DataManager
+    -loginService: LoginService
+    -expenseService: ExpenseService
+    -budgetService: BudgetService
+    -allUsers: List
+    -currentUser: User 
+
+    +showMenu()
+    +printBanner()
+    +showGuestMenu()
+    +showUserMenu()
+    +handleLogin()
+    +handleAddExpense()
+    +handleSetBudget()
+    +handleViewSummary()
+    +handleSortTransactions()
+    +handleLogout()
+    +exitApp()
+    +promptDouble()
+}
+class DataManager{
+    ~DATA_DIR: String
+    ~USERS_FILE: String
+    ~EXPENSES_DIR: String
+    ~BUDGETS_DIR: String
+
+    +loadUsers(): List
+    +saveUsers(List)
+    +loadExpensesForUser(user: User)
+    +saveExpensesForUser(user: User)
+    +loadBudgetsForUser(user: User)
+    +saveBudgetsForUser(user: User)
+}
+class User 
+
+'Dependencies
+'Uses:
+MainMenu ..> DataManager 
+MainMenu ..> LoginService 
+MainMenu ..> ExpenseService 
+MainMenu ..> BudgetService
+MainMenu ..> Category 
+MainMenu ..> Expense
+
+MainMenu o--> User
+DataManager o--> User
+@enduml
